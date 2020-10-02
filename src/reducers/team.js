@@ -62,6 +62,8 @@ const team = (state = initialState, action) => {
               members: team.members.map((mem) =>
                 mem.user_id === action.user_id
                   ? {
+                      ...mem,
+
                       user_id: action.user_id,
                       name: action.name,
                       discription: action.discription,
@@ -69,7 +71,7 @@ const team = (state = initialState, action) => {
                       email: action.email,
                       phone: action.phone,
                     }
-                  : team.members
+                  : mem
               ),
             }
           : team
