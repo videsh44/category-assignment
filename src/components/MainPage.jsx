@@ -240,8 +240,8 @@ const AddTeam = ({ dispatch }) => {
 
       {createNewModalShow === true ? (
         <Modal
-          style={{ maxWidth: "400px" }}
-          width="600px"
+          style={{ width: "100%" }}
+          //width="600px"
           title="Add New Member"
           closable={true}
           footer={null}
@@ -260,8 +260,8 @@ const AddTeam = ({ dispatch }) => {
 
       {addNewCategoryModalShow === true ? (
         <Modal
-          style={{ maxWidth: "400px" }}
-          width="600px"
+          style={{ width: "100%" }}
+          // width="600px"
           title="Add New Category"
           closable={true}
           footer={null}
