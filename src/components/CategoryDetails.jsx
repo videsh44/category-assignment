@@ -350,7 +350,7 @@ const TeamMembers = (props) => {
 
       {createNewModalShow === true ? (
         <Modal
-          style={{ minWidth: "600px" }}
+          style={{ width: "100%" }}
           title="Update"
           closable={true}
           footer={null}
@@ -370,7 +370,7 @@ const TeamMembers = (props) => {
 
       {showCategoryModal === true ? (
         <Modal
-          style={{ minWidth: "600px" }}
+          style={{ width: "100%" }}
           title="Change Category"
           closable={true}
           footer={null}
