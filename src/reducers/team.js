@@ -39,6 +39,10 @@ const team = (state = initialState, action) => {
                   uid: action.Uid,
                   email: action.email,
                   phone: action.phone,
+                  fileIconSrc: action.fileIconSrc,
+                  dateReceived: action.dateReceived,
+                  address: action.address,
+                  jobStatus: action.jobStatus,
                 },
               ],
             }
@@ -70,6 +74,10 @@ const team = (state = initialState, action) => {
                       uid: action.Uid,
                       email: action.email,
                       phone: action.phone,
+                      fileIconSrc: action.fileIconSrc,
+                      dateReceived: action.dateReceived,
+                      address: action.address,
+                      jobStatus: action.jobStatus,
                     }
                   : mem
               ),

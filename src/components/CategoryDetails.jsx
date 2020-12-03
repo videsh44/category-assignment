@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Popconfirm, Divider, Modal, Button } from "antd";
+import {
+  Table,
+  Input,
+  Popconfirm,
+  Divider,
+  Modal,
+  Button,
+  Badge,
+  Avatar,
+  DatePicker,
+} from "antd";
 import { useSelector } from "react-redux";
 import { deleteTeamMember } from "../actions";
 import { connect } from "react-redux";
@@ -10,6 +20,8 @@ import {
 } from "@ant-design/icons";
 import UpdateDetails from "./UpdateDetails";
 import ChangeCategory from "./ChangeCategory";
+
+const { RangePicker } = DatePicker;
 
 const TeamMembers = (props) => {
   //console.log("props", props.selectedData.members);
@@ -51,9 +63,54 @@ const TeamMembers = (props) => {
   const SearchValFromTable = (filterString) => {
     setSearchfilterString(filterString);
     if (filterString) {
-      const list = globalData.filter((item) =>
-        item.name.toLowerCase().includes(filterString.toLowerCase())
+      const list = globalData.filter(
+        (item) =>
+          item.name.toLowerCase().includes(filterString.toLowerCase()) ||
+          item.address.toLowerCase().includes(filterString.toLowerCase()) ||
+          item.jobStatus.toLowerCase().includes(filterString.toLowerCase()) ||
+          item.email.toLowerCase().includes(filterString.toLowerCase()) ||
+          item.phone.toLowerCase().includes(filterString.toLowerCase()) ||
+          item.discription.toLowerCase().includes(filterString.toLowerCase())
       );
+      setData(list);
+    } else {
+      setData(globalData);
+    }
+  };
+
+  const onDateFilterChange = (dates, dateStrings) => {
+    //console.log("From: ", dateStrings[0], ", to: ", dateStrings[1]);
+    //console.log("dateStrings", dateStrings);
+    console.log("dates", dates);
+    if (dates.length > 1) {
+      let startDateArray = dateStrings[0].split("-");
+      let endDateArray = dateStrings[1].split("-");
+
+      let startDateTimeStamp = new Date(
+        startDateArray[2],
+        +startDateArray[0],
+        startDateArray[1]
+      ).getTime();
+      let endDateTimeStamp = new Date(
+        endDateArray[2],
+        +endDateArray[0],
+        endDateArray[1]
+      ).getTime();
+
+      const list = globalData.filter((item) => {
+        let rowDateArray = item.dateReceived.split("-");
+        let rowDateTimeStamp = new Date(
+          rowDateArray[2],
+          +rowDateArray[0],
+          rowDateArray[1]
+        ).getTime();
+        if (
+          startDateTimeStamp <= rowDateTimeStamp &&
+          rowDateTimeStamp <= endDateTimeStamp
+        ) {
+          return item;
+        }
+      });
       setData(list);
     } else {
       setData(globalData);
@@ -63,6 +120,99 @@ const TeamMembers = (props) => {
   const onEditClick = (data) => {
     setSelectedDataForUpdate(data);
     setCreateNewModalShow(true);
+  };
+
+  const renderStatus = (status) => {
+    switch (status) {
+      case "active":
+        return (
+          <span>
+            <Badge status="success" />
+            active
+          </span>
+        );
+      case "pending":
+        return (
+          <span>
+            <Badge color="yellow" />
+            pending
+          </span>
+        );
+      case "expired":
+        return (
+          <span>
+            <Badge color="red" />
+            expired
+          </span>
+        );
+
+      default:
+        return (
+          <span>
+            <Badge color="yellow" />
+            pending
+          </span>
+        );
+    }
+  };
+
+  const expandedRowRender = (data) => {
+    const columns = [
+      {
+        title: "Icon",
+        dataIndex: "fileIconSrc",
+        key: "fileIconSrc",
+        render: (record) =>
+          record === "" || record === null || record === undefined ? (
+            "-"
+          ) : (
+            <Avatar src={record} />
+          ),
+      },
+      {
+        title: "Date",
+        dataIndex: "dateReceived",
+        key: "dateReceived",
+        render: (record) =>
+          record === "" || record === null || record === undefined ? (
+            "-"
+          ) : (
+            <span>{record}</span>
+          ),
+      },
+      {
+        title: "Address",
+        dataIndex: "address",
+        key: "address",
+        render: (record) =>
+          record === "" || record === null || record === undefined ? (
+            "-"
+          ) : (
+            <span>{record}</span>
+          ),
+      },
+      {
+        title: "UId",
+        dataIndex: "uid",
+        key: "uid",
+        render: (record) => <span>{record}</span>,
+      },
+      {
+        title: "Status",
+        dataIndex: "jobStatus",
+        key: "jobStatus",
+        render: (record) => <span>{renderStatus(record)}</span>,
+      },
+    ];
+
+    return (
+      <Table
+        rowKey={(k, i) => i}
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+      />
+    );
   };
 
   const columns = [
@@ -160,24 +310,42 @@ const TeamMembers = (props) => {
 
   return (
     <div>
-      <div>
-        <Input
-          placeholder="Search using Name"
-          prefix={<SearchOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-          value={SearchfilterString}
-          allowClear
-          onChange={(e) =>
-            SearchValFromTable(e.target.value ? e.target.value : null)
-          }
-          style={{ width: 350, marginBottom: "30px" }}
-        />
+      <div
+        style={{
+          marginTop: "30px",
+          display: "flex",
+          justifyContent: "space-around",
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
+          <Input
+            placeholder="Search "
+            prefix={<SearchOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+            value={SearchfilterString}
+            allowClear
+            onChange={(e) =>
+              SearchValFromTable(e.target.value ? e.target.value : null)
+            }
+            style={{ width: 350, marginBottom: "30px" }}
+          />
+        </div>
+
+        <div style={{ marginBottom: "10px" }}>
+          <RangePicker onChange={onDateFilterChange} />
+        </div>
       </div>
+
       <Table
         loading={loading}
-        rowKey={(k, i) => i}
+        rowKey={(k, i) => k.user_id}
         dataSource={data}
         columns={columns}
         pagination={{ pageSize: 5 }}
+        expandedRowRender={(record) => expandedRowRender([record])}
+        expandIconColumnIndex={0}
+        scroll={{ x: 1300 }}
+        //expandIconAsCell={false}
       />
 
       {createNewModalShow === true ? (

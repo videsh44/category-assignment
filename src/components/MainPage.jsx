@@ -7,6 +7,7 @@ import { FolderOpenOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import CategoryDetails from "./CategoryDetails";
 import AddMember from "./AddMember";
 import CreateCategory from "./CreateCategory";
+import "./category.css";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -58,67 +59,157 @@ const AddTeam = ({ dispatch }) => {
         }
       }
     >
-      <Layout style={{ minHeight: "100vh" }}>
-        <Header className="header">
-          <div style={{ display: "flex" }}>
-            <div style={{ width: "70%" }}>
-              <span
+      <div className="main__container">
+        <Layout style={{ minHeight: "100vh" }}>
+          <Header className="header">
+            <div style={{ display: "flex" }}>
+              <div style={{ width: "70%" }}>
+                <span
+                  style={{
+                    color: "#fff",
+                    background: "silver",
+                    padding: "0px 20px",
+                    borderRadius: "15px",
+                    fontSize: "25px",
+                  }}
+                >
+                  {" "}
+                  VIDESH
+                </span>
+              </div>
+              <div style={{ width: "30%", textAlign: "right" }}>
+                <Button type="primary" onClick={onAddCategoryClick}>
+                  <PlusCircleOutlined /> Add Category
+                </Button>
+              </div>
+            </div>
+          </Header>
+          <Layout>
+            <Sider
+              style={{
+                overflow: "auto",
+                height: "100vh",
+                position: "fixed",
+                left: 0,
+              }}
+              width={300}
+              style={{ background: "#fff" }}
+            >
+              <Menu
+                mode="inline"
+                //defaultSelectedKeys={["1"]}
+                defaultOpenKeys={["sub1"]}
+                style={{ height: "100%", borderRight: 0 }}
+              >
+                <SubMenu
+                  key="sub1"
+                  title={
+                    <span>
+                      <FolderOpenOutlined />
+                      Categories
+                    </span>
+                  }
+                >
+                  {renderTeams(teamData)}
+                </SubMenu>
+              </Menu>
+            </Sider>
+            <Layout style={{ padding: "0 24px 24px" }}>
+              <div
                 style={{
-                  color: "#fff",
-                  background: "silver",
-                  padding: "0px 20px",
-                  borderRadius: "15px",
-                  fontSize: "25px",
+                  fontSize: "19px",
+                  fontWeight: 700,
+                  padding: "5px 6px",
                 }}
               >
-                {" "}
-                VIDESH
-              </span>
-            </div>
-            <div style={{ width: "30%", textAlign: "right" }}>
-              <Button type="primary" onClick={onAddCategoryClick}>
-                <PlusCircleOutlined /> Add Category
-              </Button>
-            </div>
-          </div>
-        </Header>
-        <Layout>
-          <Sider
-            style={{
-              overflow: "auto",
-              height: "100vh",
-              position: "fixed",
-              left: 0,
-            }}
-            width={300}
-            style={{ background: "#fff" }}
-          >
-            <Menu
-              mode="inline"
-              //defaultSelectedKeys={["1"]}
-              defaultOpenKeys={["sub1"]}
-              style={{ height: "100%", borderRight: 0 }}
-            >
-              <SubMenu
-                key="sub1"
-                title={
-                  <span>
-                    <FolderOpenOutlined />
-                    Categories
-                  </span>
-                }
+                {selectedTeamName}
+              </div>
+              <Content
+                style={{
+                  background: "#fff",
+                  padding: 24,
+                  margin: 0,
+                  minHeight: 280,
+                }}
               >
-                {renderTeams(teamData)}
-              </SubMenu>
-            </Menu>
-          </Sider>
-          <Layout style={{ padding: "0 24px 24px" }}>
+                {selectedTeamName === "" ? (
+                  "Please Select Category To See Its Content"
+                ) : (
+                  <div>
+                    <div style={{ marginBottom: "30px", textAlign: "right" }}>
+                      <Button onClick={() => createNewMember()} type="primary">
+                        <PlusCircleOutlined /> Add New Form
+                      </Button>
+                    </div>
+
+                    <CategoryDetails
+                      loadAgain={loadAgain}
+                      selectedData={selectedData}
+                    />
+                  </div>
+                )}
+              </Content>
+            </Layout>
+          </Layout>
+        </Layout>
+      </div>
+
+      <div className="responsive__container">
+        <Layout style={{ minHeight: "100vh" }}>
+          <Header className="header">
+            <div className="header__responsive">
+              <div className="header__items">
+                <span
+                  style={{
+                    color: "#fff",
+                    background: "silver",
+                    padding: "0px 20px",
+                    borderRadius: "15px",
+                    fontSize: "25px",
+                  }}
+                >
+                  {" "}
+                  VIDESH
+                </span>
+              </div>
+              <div className="header__items">
+                <Button type="primary" onClick={onAddCategoryClick}>
+                  <PlusCircleOutlined /> Add Category
+                </Button>
+              </div>
+            </div>
+          </Header>
+          <Content>
+            <div>
+              <Menu
+                mode="inline"
+                //defaultSelectedKeys={["1"]}
+                defaultOpenKeys={["sub1"]}
+                style={{ height: "100%", borderRight: 0 }}
+              >
+                <SubMenu
+                  key="sub1"
+                  title={
+                    <span>
+                      <FolderOpenOutlined />
+                      Categories
+                    </span>
+                  }
+                >
+                  {renderTeams(teamData)}
+                </SubMenu>
+              </Menu>
+            </div>
             <div
-              style={{ fontSize: "19px", fontWeight: 700, padding: "5px 6px" }}
+              style={{
+                fontSize: "19px",
+                fontWeight: 700,
+                padding: "5px 6px",
+              }}
             >
               {selectedTeamName}
             </div>
-            <Content
+            <div
               style={{
                 background: "#fff",
                 padding: 24,
@@ -142,14 +233,15 @@ const AddTeam = ({ dispatch }) => {
                   />
                 </div>
               )}
-            </Content>
-          </Layout>
+            </div>
+          </Content>
         </Layout>
-      </Layout>
+      </div>
 
       {createNewModalShow === true ? (
         <Modal
-          style={{ minWidth: "600px" }}
+          style={{ maxWidth: "400px" }}
+          width="600px"
           title="Add New Member"
           closable={true}
           footer={null}
@@ -168,7 +260,8 @@ const AddTeam = ({ dispatch }) => {
 
       {addNewCategoryModalShow === true ? (
         <Modal
-          style={{ minWidth: "600px" }}
+          style={{ maxWidth: "400px" }}
+          width="600px"
           title="Add New Category"
           closable={true}
           footer={null}

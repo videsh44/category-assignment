@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Input, Button, message } from "antd";
+import { Input, Button, message, Select, DatePicker } from "antd";
 import { connect } from "react-redux";
 import { updateTeamMembers } from "../actions";
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 const UpdateDetails = ({
   dispatch,
@@ -19,6 +20,11 @@ const UpdateDetails = ({
   const [uid, setUid] = useState("");
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState(false);
+  const [dateReceived, setDateReceived] = useState("");
+  const [isIconFileUplaoded, setIsIconFileUplaoded] = useState(false);
+  const [fileIconSrc, setFileIconSrc] = useState("");
+  const [address, setAddress] = useState("");
+  const [jobStatus, setJobStatus] = useState("");
 
   useEffect(() => {
     if (
@@ -31,6 +37,10 @@ const UpdateDetails = ({
       setEmail(selectedDataForUpdate.email);
       setUid(selectedDataForUpdate.uid);
       setPhone(selectedDataForUpdate.phone);
+      setDateReceived(selectedDataForUpdate.dateReceived);
+      setFileIconSrc(selectedDataForUpdate.fileIconSrc);
+      setAddress(selectedDataForUpdate.address);
+      setJobStatus(selectedDataForUpdate.jobStatus);
     }
     return () => {};
   }, []);
@@ -53,6 +63,14 @@ const UpdateDetails = ({
 
   const onDescriptionChange = (event) => {
     setDescription(event.target.value);
+  };
+  const onDateChange = (date, dateString) => {
+    // console.log(dateString);
+    setDateReceived(dateString);
+  };
+
+  const onAddressChange = (event) => {
+    setAddress(event.target.value);
   };
 
   const createNew = () => {
@@ -95,7 +113,19 @@ const UpdateDetails = ({
     }
 
     dispatch(
-      updateTeamMembers(globalId, userId, name, description, uid, email, phone)
+      updateTeamMembers(
+        globalId,
+        userId,
+        name,
+        description,
+        uid,
+        email,
+        phone,
+        fileIconSrc,
+        dateReceived,
+        address,
+        jobStatus
+      )
     );
     message.success("Form Updated Succesfully");
     setCreateNewModalShow(false);
@@ -269,9 +299,98 @@ const UpdateDetails = ({
         </div>
       </div>
 
+      <div style={{ display: "flex", marginBottom: "25px" }}>
+        <div
+          style={{
+            width: "140px",
+            fontWeight: 600,
+          }}
+        >
+          Date Received
+        </div>
+        <div style={{ width: "calc(100% - 160px)", marginLeft: "20px" }}>
+          <div>
+            <DatePicker
+              //value={dateReceived}
+              disabled
+              onChange={onDateChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", marginBottom: "25px" }}>
+        <div
+          style={{
+            width: "140px",
+            fontWeight: 600,
+          }}
+        >
+          Icon
+        </div>
+        <div style={{ width: "calc(100% - 160px)", marginLeft: "20px" }}>
+          {fileIconSrc ? (
+            <div style={{ maxWidth: "100%" }}>
+              <div>
+                <img src={fileIconSrc} alt="icon" style={{ maxWidth: "60%" }} />
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", marginBottom: "25px" }}>
+        <div
+          style={{
+            width: "140px",
+            fontWeight: 600,
+          }}
+        >
+          Address
+        </div>
+        <div style={{ width: "calc(100% - 160px)", marginLeft: "20px" }}>
+          <div>
+            <Input
+              type="text"
+              placeholder="Address"
+              value={address}
+              style={{
+                width: "100%",
+              }}
+              onChange={onAddressChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", marginBottom: "25px" }}>
+        <div
+          style={{
+            width: "140px",
+            fontWeight: 600,
+          }}
+        >
+          Status
+        </div>
+        <div style={{ width: "calc(100% - 160px)", marginLeft: "20px" }}>
+          <div>
+            <Select
+              placeholder="Select Status"
+              value={jobStatus}
+              style={{ width: "100%" }}
+              onChange={(val) => setJobStatus(val)}
+            >
+              <Option value="active">Active</Option>
+              <Option value="pending">Pending</Option>
+              <Option value="expired">Expired</Option>
+            </Select>
+          </div>
+        </div>
+      </div>
+
       <div style={{ margin: "60px 0px 30px 0px", textAlign: "center" }}>
         <Button type="primary" onClick={() => createNew()}>
-          Add New
+          Update
         </Button>
       </div>
     </div>

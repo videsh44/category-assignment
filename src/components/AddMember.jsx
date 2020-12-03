@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Input, Button, message } from "antd";
+import { Input, Button, message, DatePicker, Select } from "antd";
 import { connect } from "react-redux";
 import { addTeamMembers } from "../actions";
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 const AddMember = ({
   dispatch,
@@ -19,6 +20,11 @@ const AddMember = ({
   const [email, setEmail] = useState("");
   const [uid, setUid] = useState("");
   const [phone, setPhone] = useState("");
+  const [dateReceived, setDateReceived] = useState("");
+  const [isIconFileUplaoded, setIsIconFileUplaoded] = useState(false);
+  const [fileIconSrc, setFileIconSrc] = useState("");
+  const [address, setAddress] = useState("");
+  const [jobStatus, setJobStatus] = useState("");
 
   const onNameChange = (event) => {
     if (
@@ -72,6 +78,30 @@ const AddMember = ({
     setDescription(event.target.value);
   };
 
+  const onDateChange = (date, dateString) => {
+    // console.log(dateString);
+    setDateReceived(dateString);
+  };
+
+  const filechangeIconHandler = (event) => {
+    var readerIcon = new FileReader();
+    var url = readerIcon.readAsDataURL(event.target.files[0]);
+    readerIcon.onloadend = (e) => {
+      setIsIconFileUplaoded(true);
+      setFileIconSrc(readerIcon.result);
+      // console.log(readerIcon.result);
+    };
+  };
+
+  const reuploadIconMedia = () => {
+    setIsIconFileUplaoded(false);
+    setFileIconSrc("");
+  };
+
+  const onAddressChange = (event) => {
+    setAddress(event.target.value);
+  };
+
   const createNew = () => {
     if (name === "" || name === " " || name === undefined || name === null) {
       setName(null);
@@ -99,7 +129,21 @@ const AddMember = ({
       message.warning("Please Enter Valid Phone or Leave it Blank");
     }
 
-    dispatch(addTeamMembers(id, text, name, description, uid, email, phone));
+    dispatch(
+      addTeamMembers(
+        id,
+        text,
+        name,
+        description,
+        uid,
+        email,
+        phone,
+        fileIconSrc,
+        dateReceived,
+        address,
+        jobStatus
+      )
+    );
     message.success("Form Added Succesfully");
     setCreateNewModalShow(false);
     setLoadAgain(!loadAgain);
@@ -263,6 +307,119 @@ const AddMember = ({
               onChange={onDescriptionChange}
               rows={4}
             />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", marginBottom: "25px" }}>
+        <div
+          style={{
+            width: "140px",
+            fontWeight: 600,
+          }}
+        >
+          Date Received
+        </div>
+        <div style={{ width: "calc(100% - 160px)", marginLeft: "20px" }}>
+          <div>
+            <DatePicker onChange={onDateChange} />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", marginBottom: "25px" }}>
+        <div
+          style={{
+            width: "140px",
+            fontWeight: 600,
+          }}
+        >
+          Icon Upload
+        </div>
+        <div style={{ width: "calc(100% - 160px)", marginLeft: "20px" }}>
+          {isIconFileUplaoded === false ? (
+            <label>
+              <Input
+                type="file"
+                style={{ display: "none" }}
+                accept="image/*"
+                onChange={filechangeIconHandler}
+              />
+              <span
+                style={{
+                  border: "1px solid #1890ff",
+                  background: "#fff",
+                  color: "#1890ff",
+                  fontWeight: 400,
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  padding: "6.5px 15px",
+                  borderRadius: "4px",
+                  lineHeight: "1.499",
+                }}
+              >
+                Upload
+              </span>
+            </label>
+          ) : (
+            <div style={{ maxWidth: "100%" }}>
+              <div style={{ marginBottom: "20px", textAlign: "right" }}>
+                <Button type="danger" onClick={() => reuploadIconMedia()}>
+                  Change Media
+                </Button>
+              </div>
+              <div>
+                <img src={fileIconSrc} alt="icon" style={{ maxWidth: "60%" }} />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", marginBottom: "25px" }}>
+        <div
+          style={{
+            width: "140px",
+            fontWeight: 600,
+          }}
+        >
+          Address
+        </div>
+        <div style={{ width: "calc(100% - 160px)", marginLeft: "20px" }}>
+          <div>
+            <Input
+              type="text"
+              placeholder="Address"
+              style={{
+                width: "100%",
+              }}
+              onChange={onAddressChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", marginBottom: "25px" }}>
+        <div
+          style={{
+            width: "140px",
+            fontWeight: 600,
+          }}
+        >
+          Status
+        </div>
+        <div style={{ width: "calc(100% - 160px)", marginLeft: "20px" }}>
+          <div>
+            <Select
+              placeholder="Select Status"
+              //  defaultValue="lucy"
+              style={{ width: "100%" }}
+              onChange={(val) => setJobStatus(val)}
+            >
+              <Option value="active">Active</Option>
+              <Option value="pending">Pending</Option>
+              <Option value="expired">Expired</Option>
+            </Select>
           </div>
         </div>
       </div>

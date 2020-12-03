@@ -15,7 +15,11 @@ export const addTeamMembers = (
   discription,
   Uid,
   email,
-  phone
+  phone,
+  fileIconSrc,
+  dateReceived,
+  address,
+  jobStatus
 ) => {
   return {
     type: "ADD_CATEGORY_FORM",
@@ -27,6 +31,10 @@ export const addTeamMembers = (
     Uid,
     email,
     phone,
+    fileIconSrc,
+    dateReceived,
+    address,
+    jobStatus,
   };
 };
 
@@ -37,7 +45,11 @@ export const updateTeamMembers = (
   discription,
   Uid,
   email,
-  phone
+  phone,
+  fileIconSrc,
+  dateReceived,
+  address,
+  jobStatus
 ) => {
   return {
     type: "UPDATE_CATEGORY_FORM",
@@ -48,6 +60,10 @@ export const updateTeamMembers = (
     Uid,
     email,
     phone,
+    fileIconSrc,
+    dateReceived,
+    address,
+    jobStatus,
   };
 };
 
